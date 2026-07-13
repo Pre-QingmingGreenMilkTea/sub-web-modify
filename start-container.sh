@@ -4,7 +4,7 @@ set -Eeuo pipefail
 PROJECT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 IMAGE_NAME="${IMAGE_NAME:-sub-web-modify:socks5-tls-fix}"
 CONTAINER_NAME="${CONTAINER_NAME:-sub-web-modify}"
-HOST_PORT="${HOST_PORT:-8080}"
+HOST_PORT="${1:-${HOST_PORT:-8080}}"
 SUBCONVERTER_UPSTREAM="${SUBCONVERTER_UPSTREAM:-https://api.v1.mk}"
 
 cd "$PROJECT_DIR"
