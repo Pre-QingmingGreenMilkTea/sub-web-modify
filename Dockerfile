@@ -16,7 +16,20 @@ COPY . .
 RUN yarn build
 
 # --- Runtime stage ---
-FROM nginx:1.24-alpine
-COPY --from=build /app/dist /usr/share/nginx/html
+# The lightweight Node server serves the built UI and wraps /sub so TLS-enabled
+# SOCKS5 fields can be restored after the upstream converter has done its work.
+FROM node:22.18.0-alpine3.22
+
+WORKDIR /app
+
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile --production && yarn cache clean
+
+COPY --from=build /app/dist ./dist
+COPY server ./server
+
+ENV PORT=80 \
+    SUBCONVERTER_UPSTREAM=https://api.v1.mk
+
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["node", "server/index.js"]
