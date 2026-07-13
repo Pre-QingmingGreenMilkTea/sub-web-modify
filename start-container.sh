@@ -20,6 +20,11 @@ if docker container inspect "$CONTAINER_NAME" >/dev/null 2>&1; then
   docker rm -f "$CONTAINER_NAME" >/dev/null
 fi
 
+if command -v ss >/dev/null 2>&1 && ss -H -ltn "sport = :$HOST_PORT" | grep -q .; then
+  echo "Port $HOST_PORT is already in use. Stop the existing service or set HOST_PORT to another port." >&2
+  exit 1
+fi
+
 echo "Starting $CONTAINER_NAME on port $HOST_PORT"
 docker run -d \
   --name "$CONTAINER_NAME" \
