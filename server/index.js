@@ -233,3 +233,19 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, "0.0.0.0", () => {
   console.log(`sub-web-modify listening on port ${PORT}`);
 });
+
+function shutdown(signal) {
+  console.log(`received ${signal}, shutting down`);
+  server.close(error => {
+    if (error) {
+      console.error(`shutdown failed: ${error.message}`);
+      process.exit(1);
+    }
+    process.exit(0);
+  });
+
+  setTimeout(() => process.exit(1), 10_000).unref();
+}
+
+process.once("SIGTERM", () => shutdown("SIGTERM"));
+process.once("SIGINT", () => shutdown("SIGINT"));

@@ -1,6 +1,8 @@
 .DS_Store
 node_modules
 subfile
+server.log
+server.pid
 /dist
 
 # local env files
